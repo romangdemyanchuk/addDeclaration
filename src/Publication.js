@@ -1,99 +1,87 @@
 import React, {useState, useEffect} from "react";
-import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { Button, Form, FormGroup, Label, Input, FormText, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 import {Link} from "react-router-dom";
-import Modal from "./Modal";
-import {useHistory} from "react-router-dom";
 import SuccessModal from "./Modal";
+import {getAllDataFromStorage, getDataFromStorage} from "./functions";
 
-const Publication = (props) => {
-    let isButtonClick = props.history.location.state ?
-        props.history.location.state.isButtonClick : false
-    const [storageData, setStorageData] = useState(null);
-    const history = useHistory();
+const Publication = () => {
     const [modal, setModal] = useState(false);
-    const [food, setFood] = useState('');
-    const [program, setProgram] = useState('');
-    const [taxi, setTaxi] = useState('');
-    const [restRoom, setRestRoom] = useState('');
-    const [beverages, setBeverages] = useState('');
+    const [food, setFood] = useState(false);
+    const [program, setProgram] = useState(false);
+    const [taxi, setTaxi] = useState(false);
+    const [restRoom, setRestRoom] = useState(false);
+    const [beverages, setBeverages] = useState(false);
 
-    const foodChange = (e) => setFood(e.target.value)
-    const programChange = (e) => setProgram(e.target.value)
-    const taxiChange = (e) => setTaxi(e.target.value)
-    const restRoomChange = (e) => setRestRoom(e.target.value)
-    const beveragesChange = (e) => setBeverages(e.target.value)
-    // useEffect(() => {
-    //     setStorageData(JSON.parse(localStorage.getItem('images')));
-    //     console.log(45, storageData, isButtonClick)
-    //     if(!isButtonClick && !storageData) {
-    //         history.push('/photos')
-    //     }
-    // }, []);
+    useEffect(() => {
+        const data = getDataFromStorage('services');
+        if (data) {
+            setFood(data.food);
+            setProgram(data.program);
+            setTaxi(data.taxi);
+            setRestRoom(data.restRoom);
+            setBeverages(data.beverages);
+        }
+    }, []);
+
+    const foodChange = (e) => setFood(e.target.checked)
+    const programChange = (e) => setProgram(e.target.checked)
+    const taxiChange = (e) => setTaxi(e.target.checked)
+    const restRoomChange = (e) => setRestRoom(e.target.checked)
+    const beveragesChange = (e) => setBeverages(e.target.checked)
+
     const handleSubmit = (e) => {
         setModal(true)
         e.preventDefault();
         const el = { food, program, taxi, restRoom, beverages}
         let item = JSON.stringify(el);
         localStorage.setItem('services', item);
-        let contact = JSON.parse(localStorage.getItem('contact'));
-        let main = JSON.parse(localStorage.getItem('main'));
-        let images = JSON.parse(localStorage.getItem('images'));
-        let services = JSON.parse(localStorage.getItem('services'));
-        const all = { contact, main, services, images}
-        let elem = JSON.stringify(all);
-        localStorage.setItem('formData', elem);
-        // history.push('/public')
+        let data = getAllDataFromStorage();
+        localStorage.setItem('formData', data);
     };
+
     const toggle = () => setModal(!modal);
+
     return (
         <>
             <SuccessModal toggle={toggle} modal={modal}/>
-
             <Form onSubmit={handleSubmit}
             >
-                <Col>
+                <Col sm={3}>
                     <FormGroup check>
-                        <Input type="checkbox" label="food" name="status" onChange={foodChange}/>{' '}
+                        <Input type="checkbox" label="food" checked={food} name="food" onChange={foodChange}/>{' '}
                         <Label for="status">food</Label>
                     </FormGroup>
                 </Col>
-                <Col>
+                <Col sm={3}>
                     <FormGroup check>
-                        <Input type="checkbox" label="culture program" name="status" onChange={programChange}/>{' '}
+                        <Input type="checkbox" label="culture program" checked={program} name="status" onChange={programChange}/>{' '}
                         <Label for="status">culture program</Label>
                     </FormGroup>
                 </Col>
-                <Col>
+                <Col sm={3}>
                     <FormGroup check>
-                        <Input type="checkbox" label="taxi" name="status" onChange={taxiChange}/>{' '}
+                        <Input type="checkbox" label="taxi" checked={taxi} name="status" onChange={taxiChange}/>{' '}
                         <Label for="status">taxi</Label>
                     </FormGroup>
                 </Col>
-                <Col>
+                <Col sm={3}>
                     <FormGroup check>
-                        <Input type="checkbox" label="rest room" name="status" onChange={restRoomChange}/>{' '}
+                        <Input type="checkbox" label="rest room" checked={restRoom} name="status" onChange={restRoomChange}/>{' '}
                         <Label for="status">rest room</Label>
                     </FormGroup>
                 </Col>
-                <Col>
+                <Col sm={3}>
                     <FormGroup check>
-                        <Input type="checkbox" label="beverages" name="status" onChange={beveragesChange}/>{' '}
+                        <Input type="checkbox" label="beverages" checked={beverages} name="status" onChange={beveragesChange}/>{' '}
                         <Label for="status">beverages</Label>
                     </FormGroup>
                 </Col>
-
-
-
                 <FormGroup check row>
-                    <Col sm={{ size: 8, offset: 4 }}>
+                    <Col sm={{ size: 8, offset: 0 }}>
                         <Link to={'/photos'}>
-                            <Button outline color="primary">Prev</Button>{' '}
+                            <Button size="sm" outline color="primary">Prev</Button>{' '}
                         </Link>
-                        {/*<Link to={'/public'}>*/}
-                            <Button type="submit" outline color="primary">Save</Button>
-                        {/*</Link>*/}
-
+                        <Button size="sm" type="submit" outline color="primary">Save</Button>
                     </Col>
                 </FormGroup>
             </Form>

@@ -1,31 +1,28 @@
 import React, {useState, useEffect} from "react";
-import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { Button, Form, FormGroup, Label, Input, FormText, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 import {Link, useHistory} from "react-router-dom";
+import {getDataFromStorage} from "./functions";
+import {AvField, AvForm} from "availity-reactstrap-validation";
 
-const Photos = (props) => {
-    let isButtonClick = props.history.location.state ?
-        props.history.location.state.isButtonClick : false
+const Photos = () => {
+    let previousTab = 'contact'
     const [images, setImages] = useState([]);
-    const [storageData, setStorageData] = useState(null);
     const history=useHistory()
+
     useEffect(() => {
-        setStorageData(JSON.parse(localStorage.getItem('images')));
-        console.log(45, storageData, isButtonClick)
-        if(!isButtonClick && (!storageData || storageData === [])) {
-            history.push('/contact')
+        if (getDataFromStorage(previousTab)?.isTabValid) {
+            const data = getDataFromStorage('images');
+            if (!data) {
+                history.push('/contact')
+            }
         }
     }, []);
 
-    const handleSubmit = (e) => {
-        history.push({
-            pathname: '/public',
-            state: { isButtonClick: true }
-        })
+    const handleSubmit = () => {
+        history.push('/public');
     };
 
     const handleFileChange = (e) => {
-
         localStorage.setItem('images', []);
         if (e.target.files) {
             const files = Array.from(e.target.files);
@@ -58,25 +55,23 @@ const Photos = (props) => {
 
     return (
         <Form onSubmit={handleSubmit}>
-            <FormGroup>
-                <Label for="exampleFile">File</Label>
-                <Input type="file" name="file" id="exampleFile"  onChange={handleFileChange} multiple/>
-            </FormGroup>
+            <Col sm={3}>
+                <FormGroup>
+                    <Label for="exampleFile">File</Label>
+                    <Input type="file" name="file" id="exampleFile"  onChange={handleFileChange} multiple/>
+                </FormGroup>
+            </Col>
+
             <FormGroup check row>
                 {images.length >= 5 && <p>Maximum 5 photos. Upload again!</p>}
                 {images.length >= 5 && localStorage.removeItem('images')}
-                {/*<AvForm>*/}
-                    <Col sm={{ size: 8, offset: 4 }}>
+                    <Col sm={{ size: 8, offset: 0 }}>
                         <Link to={'/contact'}>
-                            <Button outline color="primary">Prev</Button>{' '}
+                            <Button size="sm" outline color="primary">Prev</Button>{' '}
                         </Link>
-                        {/*<Link to={'/public'}>*/}
-                            <Button type="submit" outline color="primary">Next</Button>{' '}
-                        {/*</Link>*/}
+                        <Button size="sm" type="submit" outline color="primary">Next</Button>{' '}
                     </Col>
-                {/*</AvForm>*/}
             </FormGroup>
-
         </Form>
     )
 };

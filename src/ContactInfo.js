@@ -2,58 +2,52 @@ import React, {useState, useEffect} from "react";
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { Button, Form, FormGroup, Label, Input, FormText, Col } from 'reactstrap';
 import {useHistory, Link} from "react-router-dom";
+import {getDataFromStorage} from "./functions";
 
-const ContactInfo = (props) => {
-    let isButtonClick = props.history.location.state ?
-        props.history.location.state.isButtonClick : false
-    const history = useHistory();
+const ContactInfo = () => {
+    let previousTab = 'main'
     const [number, setNumber] = useState('');
     const [email, setEmail] = useState('');
 
-
-    const [storageData, setStorageData] = useState(null);
+    const history = useHistory();
     useEffect(() => {
-        setStorageData(JSON.parse(localStorage.getItem('contact')));
-        console.log(45, storageData, isButtonClick)
-        if(!isButtonClick && !storageData) {
-            history.push('/')
-        }
+        if (getDataFromStorage(previousTab)?.isTabValid) {
+            const data = getDataFromStorage('contact');
+            if (data) {
+                setNumber(data.number);
+                setEmail(data.email);
+            }
+        } else { history.push('/') }
     }, []);
-    const handleSubmit = (e) => {
-
-        const el = { number, email}
-        let item = JSON.stringify(el);
-        localStorage.setItem('contact', item);
-        history.push({
-            pathname: '/photos',
-            state: { isButtonClick: true }
-        })
-    };
+    const handleSubmit = () => {
+        localStorage.setItem("contact", JSON.stringify({ number, email, isTabValid: true }))
+        history.push('/photos');
+    }
 
     const numberChange = (e) => setNumber(e.target.value)
     const emailChange = (e) => setEmail(e.target.value)
     return (
         <Form onSubmit={handleSubmit}>
-            <Col sm={10}>
+            <Col sm={3}>
                 <FormGroup >
                     <AvForm>
-                        <AvField value={storageData ? storageData.number : ''} name="number" label="phone number" type="text" required onChange={numberChange} />
+                        <AvField value={number} name="number" label="phone number" type="text" required onChange={numberChange} />
                     </AvForm>
                 </FormGroup>
             </Col>
-            <Col sm={10}>
+            <Col sm={3}>
                 <FormGroup >
                     <AvForm>
-                        <AvField type="email" name="email" value={storageData ? storageData.email : ''} label="email" onChange={emailChange} />
+                        <AvField type="email" name="email" value={email} label="email" onChange={emailChange} />
                     </AvForm>
                 </FormGroup>
             </Col>
             <FormGroup check row>
-                <Col sm={{ size: 8, offset: 4 }}>
+                <Col sm={{ size: 2, offset: 0 }}>
                     <Link to={'/'}>
-                        <Button outline color="primary">Prev</Button>{' '}
+                        <Button size="sm" outline color="primary">Prev</Button>{' '}
                     </Link>
-                    <Button disabled={number === ''} outline color="primary">Next</Button>{' '}
+                    <Button size="sm" disabled={number === ''} outline color="primary">Next</Button>{' '}
                 </Col>
             </FormGroup>
 
