@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button,  ModalHeader, ModalBody, ModalFooter, Modal } from 'reactstrap';
 
 const SuccessModal = ({toggle, modal}) => {

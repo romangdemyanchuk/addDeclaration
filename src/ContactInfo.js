@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { Button, Form, FormGroup, Label, Input, FormText, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Col } from 'reactstrap';
 import {useHistory, Link} from "react-router-dom";
 import {getDataFromStorage} from "./functions";
 

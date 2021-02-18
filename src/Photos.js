@@ -1,22 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 import {Link, useHistory} from "react-router-dom";
-import {getDataFromStorage} from "./functions";
-import {AvField, AvForm} from "availity-reactstrap-validation";
 
 const Photos = () => {
-    let previousTab = 'contact'
     const [images, setImages] = useState([]);
     const history=useHistory()
-
-    useEffect(() => {
-        if (getDataFromStorage(previousTab)?.isTabValid) {
-            const data = getDataFromStorage('images');
-            if (!data) {
-                history.push('/contact')
-            }
-        }
-    }, []);
 
     const handleSubmit = () => {
         history.push('/public');
@@ -37,22 +25,12 @@ const Photos = () => {
                 }))
             });
             Promise.all(promises).then(image => {
-                // if (image.length < 5) {
                     setImages(image);
-                    const el = image
-                    let item = JSON.stringify(el);
+                    let item = JSON.stringify(image);
                     localStorage.setItem('images', item);
-
-                // }
-                // else {
-                //     console.log(789)
-                //     localStorage.setItem('images', []);
-                // }
-
             }, error => { console.error(error); });
         }
     }
-
     return (
         <Form onSubmit={handleSubmit}>
             <Col sm={3}>

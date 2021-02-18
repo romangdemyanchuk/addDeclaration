@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { Button, Form, FormGroup, Label, Input, FormText, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Col } from 'reactstrap';
 import {useHistory} from "react-router-dom";
 import {getDataFromStorage} from "./functions";
 
@@ -8,7 +8,6 @@ const Main = () => {
     const [heading, setHeading] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState(false);
-    const [isTabValid, setIsTabValid] = useState(false);
 
     const history = useHistory();
 
@@ -54,14 +53,14 @@ const Main = () => {
                 </FormGroup>
             </Col>
             <Col>
-                <FormGroup check>
-                    <AvForm check>
+                <FormGroup>
+                    <AvForm>
                         <AvField type="checkbox" label="status" name="status" checked={status} onChange={statusChange}/>{' '}
                     </AvForm>
                 </FormGroup>
             </Col>
-            <FormGroup to={'/contact'}  check row>
-                <Col sm={{ size: 10, offset: 0 }}>
+            <FormGroup to={'/contact'} row>
+                <Col sm={{ size: 10, offset: 1 }}>
                     <Button size="sm" disabled={heading === ''} type="submit" outline color="primary">Next</Button>{' '}
                 </Col>
             </FormGroup>
